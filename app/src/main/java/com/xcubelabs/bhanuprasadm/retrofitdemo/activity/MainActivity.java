@@ -1,6 +1,12 @@
 package com.xcubelabs.bhanuprasadm.retrofitdemo.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -14,8 +20,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xcubelabs.bhanuprasadm.retrofitdemo.R;
+import com.xcubelabs.bhanuprasadm.retrofitdemo.adapter.ShareIntentListAdapter;
 import com.xcubelabs.bhanuprasadm.retrofitdemo.api.GitApi;
 import com.xcubelabs.bhanuprasadm.retrofitdemo.model.GitModel;
+
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -29,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText edit_user;
     ProgressBar pbar;
     String API = "https://api.github.com";    //BASE URL
+    ShareIntentListAdapter objShareIntentListAdapter;
+    Context context;
+    private String ShortDesc = "Short Description";
+    private String BusinessName = "PurpleTalk";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnShare = (Button) findViewById(R.id.btnShare);
         pbar.setVisibility(View.INVISIBLE);
 
+        context = this;
         btnShare.setOnClickListener(this);
         click.setOnClickListener(this);
     }
@@ -99,10 +113,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnShare:
                 if(!TextUtils.isEmpty(tv.getText())){
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, tv.getText());
-                    sendIntent.setType("text/plain");
-                    startActivity(sendIntent);
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    PackageManager pm = getPackageManager();
+                    List<ResolveInfo> activityList = pm.queryIntentActivities(sharingIntent, 0);
+
+                    objShareIntentListAdapter = new ShareIntentListAdapter(MainActivity.this,activityList.toArray());
+                    // Create alert dialog box
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("Share via");
+                    builder.setAdapter(objShareIntentListAdapter, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int item) {
+                            ResolveInfo info = (ResolveInfo) objShareIntentListAdapter.getItem(item);
+                            // start respective activity
+                            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                            intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+                            intent.setType("text/plain");
+                            intent.putExtra(android.content.Intent.EXTRA_SUBJECT,  ShortDesc+" from "+BusinessName);
+                            String shortURL = "www.purpletalk.com";
+                            intent.putExtra(android.content.Intent.EXTRA_TEXT, ShortDesc+" "+shortURL);
+                            intent.putExtra(Intent.EXTRA_TITLE, ShortDesc+" "+shortURL);
+                            context.startActivity(intent);
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
                 break;
             default:
