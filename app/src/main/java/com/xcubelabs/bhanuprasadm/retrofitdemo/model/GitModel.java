@@ -1,6 +1,5 @@
 package com.xcubelabs.bhanuprasadm.retrofitdemo.model;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class GitModel {
@@ -635,4 +634,7 @@ public class GitModel {
         this.updatedAt = updatedAt;
     }
 
+    public String shortDescription() {
+        return "Github Name \t:" + name + "\nLocation \t\t:" + location + "\nRepos \t\t\t:" + publicRepos;
+    }
 }

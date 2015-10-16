@@ -1,15 +1,13 @@
 package com.xcubelabs.bhanuprasadm.retrofitdemo.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String API = "https://api.github.com";    //BASE URL
     ShareIntentListAdapter objShareIntentListAdapter;
     Context context;
+    GitModel userDetails;
     private String ShortDesc = "Short Description";
     private String BusinessName = "PurpleTalk";
 
@@ -100,8 +99,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 git.getFeed(user, new Callback<GitModel>() {
                     @Override
                     public void success(GitModel gitmodel, Response response) {
-                        tv.setText("Github Name \t:" + gitmodel.getName() + "\nLocation \t\t:" + gitmodel.getLocation() + "\nRepos \t\t\t:" + gitmodel.getPublicRepos());
+                        tv.setText(gitmodel.shortDescription());
                         pbar.setVisibility(View.INVISIBLE);       //disable progressbar
+                        userDetails = gitmodel;
                     }
 
                     @Override
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 break;
             case R.id.btnShare:
-                if(!TextUtils.isEmpty(tv.getText())){
+                if (userDetails != null) {
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
                     PackageManager pm = getPackageManager();
@@ -130,10 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                             intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
                             intent.setType("text/plain");
-                            intent.putExtra(android.content.Intent.EXTRA_SUBJECT,  ShortDesc+" from "+BusinessName);
-                            String shortURL = "www.purpletalk.com";
-                            intent.putExtra(android.content.Intent.EXTRA_TEXT, ShortDesc+" "+shortURL);
-                            intent.putExtra(Intent.EXTRA_TITLE, ShortDesc+" "+shortURL);
+                            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Github Details of " + userDetails.getLogin());
+                            intent.putExtra(android.content.Intent.EXTRA_TEXT, userDetails.shortDescription());
+                            intent.putExtra(Intent.EXTRA_TITLE, userDetails.getLogin());
                             context.startActivity(intent);
                         }
                     });
