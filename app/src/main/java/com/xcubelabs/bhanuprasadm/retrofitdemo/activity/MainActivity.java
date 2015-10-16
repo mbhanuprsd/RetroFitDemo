@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 git.getFeed(user, new Callback<GitModel>() {
                     @Override
                     public void success(GitModel gitmodel, Response response) {
-                        tv.setText("Github Name :" + gitmodel.getName() + "\nWebsite :" + gitmodel.getBlog() + "\nCompany Name :" + gitmodel.getCompany());
+                        tv.setText("Github Name \t:" + gitmodel.getName() + "\nLocation \t\t:" + gitmodel.getLocation() + "\nRepos \t\t\t:" + gitmodel.getPublicRepos());
                         pbar.setVisibility(View.INVISIBLE);       //disable progressbar
                     }
 
