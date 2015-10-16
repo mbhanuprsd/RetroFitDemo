@@ -18,11 +18,12 @@
             android:layout_weight="1"
             android:background="@android:drawable/edit_text" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnSearch"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:drawable/ic_menu_search" />
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:background="@android:drawable/dialog_holo_dark_frame"/>
 
     </LinearLayout>
     <RelativeLayout
@@ -41,4 +42,13 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_share"
+        android:textColor="#FFF"
+        android:background="@android:drawable/dialog_holo_dark_frame"
+        android:layout_margin="5dp"/>
 </LinearLayout>

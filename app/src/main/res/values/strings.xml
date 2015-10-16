@@ -4,4 +4,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="label_share">Share</string>
+    <string name="label_webview">WebView</string>
+    <string name="title_activity_web_view">WebViewActivity</string>
 </resources>
